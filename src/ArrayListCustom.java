@@ -1,12 +1,12 @@
 class ArrayListCustom<E> {
 
-  private static final int initialCapacity = 20;
+  private static final int CAP = 20; // Initial capacity
   private int size = 0; // Number of items currently in the list
-  private Object[] list;
+  private Object[] list; // Can't create array of generic classes
 
   public ArrayListCustom() {
-    // Creates a generic array of objects with the length of initial capacity
-    list = new Object[initialCapacity];
+    // Creates an array of objects with the length of initial capacity
+    list = new Object[CAP];
   }
 
   public int size() {
@@ -27,16 +27,33 @@ class ArrayListCustom<E> {
   public void add(E e) {
     // Checks if we've reached the capacity
     if (size == list.length) {
-      addCapacity();
+      increaseCap();
     }
 
-    // Adds data to the last unassigned index
-    // Increases the size by 1
+    // Updates size & assigns data to the last index (empty)
     list[size++] = e;
   }
 
+  public void set(E e, int index) {
+    list[index] = e;
+  }
+
+  public void insert(E e, int index) {
+    // Each next index after index param gets the value of the current index
+    // Moving from the end of array until the index param
+    for (int i = size - 1; i > index; i--) {
+      list[i + 1] = list[i];
+    }
+
+    // After shifting is done, assign the value
+    list[index] = e;
+
+    // Update size
+    size++;
+  }
+
   @SuppressWarnings("unchecked")
-  public E remove(int index) {
+  public E delete(int index) {
     if (index < 0 || index >= size) {
       throw new IndexOutOfBoundsException(index);
     }
@@ -48,13 +65,13 @@ class ArrayListCustom<E> {
       list[i] = list[i + 1];
     }
 
-    // Reduces size by 1
+    // Updates size
     size--;
 
     return (E) removedItem;
   }
 
-  private void copyTo(int capacity) {
+  private void cloneArrayWith(int capacity) {
     var tmp = new Object[capacity];
 
     for (int i = 0; i < list.length; i++) {
@@ -64,13 +81,25 @@ class ArrayListCustom<E> {
     list = tmp;
   }
 
-  private void addCapacity() {
-    int newCapacity = list.length * 2;
-    copyTo(newCapacity);
+  private void increaseCap() {
+    int newCapacity = list.length * 2; // Doubling the capacity for efficiency
+    cloneArrayWith(newCapacity);
   }
 
-  public Object[] getAll() {
-    return list;
+  public String toStringCustom() {
+    var result = "[";
+
+    // Only for assigned indices: i < size
+    for (int i = 0; i < size; i++) {
+      result += list[i];
+      // Check if not last item
+      if (i != size - 1)
+        result += ", ";
+    }
+
+    result += "]";
+
+    return result;
   }
 
 }

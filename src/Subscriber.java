@@ -11,7 +11,8 @@ enum MemType {
   OFFICER;
 }
 
-public abstract class Subscriber {
+public abstract class Subscriber implements Comparable<Subscriber> {
+
   private int id;
   private String name;
   private String phoneNo;
@@ -22,12 +23,10 @@ public abstract class Subscriber {
   public Subscriber(
       int id,
       String name,
-      String phoneNo,
       SubscLevel subscLevel,
       boolean subscPaid) {
     this.id = id;
     this.name = name;
-    this.phoneNo = phoneNo;
     this.subscLevel = subscLevel;
     this.subscPaid = subscPaid;
   }
@@ -70,6 +69,15 @@ public abstract class Subscriber {
 
   public void setMemType(MemType memType) {
     this.memType = memType;
+  }
+
+  @Override
+  public int compareTo(Subscriber s) {
+    if (getId() > s.getId())
+      return 1;
+    if (getId() < s.getId())
+      return -1;
+    return 0;
   }
 
 }
